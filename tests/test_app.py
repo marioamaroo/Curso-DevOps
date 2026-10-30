@@ -28,6 +28,11 @@ def test_tarefas_post():
     assert resposta.status_code == 201
     assert resposta.json() == {"mensagem": "OK"}
 
+    resposta = CLIENT.get("/tarefas")
+    assert resposta.json() == [
+        {"0": "teste"}
+    ]
+
 def test_tarefa_criada():
     resposta = CLIENT.get("/tarefas/0")
     assert resposta.status_code == 200
@@ -62,8 +67,11 @@ def test_tarefas_get_id():
         "concluida_em": str(DATA_CONCLUSAO)
     }
 
+    resposta = CLIENT.get("/tarefas/1")
+    assert resposta.json() == {"mensagem": "Tarefa não existe"}
+
 # 5. Implementar um teste unitário para a rota /tarefas/{id} (DELETE)
-def teste_tarefas_delete():
+def test_tarefas_delete():
     resposta = CLIENT.delete("/tarefas/1")
     assert resposta.json() == {"mensagem": "Tarefa não existe"}
 
@@ -72,3 +80,9 @@ def teste_tarefas_delete():
 
     resposta = CLIENT.get("/tarefas")
     assert resposta.json() == []
+
+def test_autor():
+    resposta = CLIENT.get("/autor")
+
+    assert resposta.status_code == 200
+    assert resposta.json() == {"mensagem": "Pedro Rocha Horchulhack"}
