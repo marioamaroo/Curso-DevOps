@@ -22,7 +22,7 @@ def criar_tarefa(titulo, descricao):
         "titulo": titulo,
         "descricao": descricao,
         "concluida": False,
-        "criada_em": datetime.now()
+        "criada_em": datetime.now().isoformat(timespec="seconds")
     }
 
 # GET /tarefas: Lista todas as tarefas (somente id e titulo)
@@ -39,7 +39,7 @@ async def tarefas():
     return lista_somente_id_titulo
 
 # POST /tarefas: Cria tarefa
-@APP.post("/tarefas")
+@APP.post("/tarefas", status_code=201)
 async def post_tarefa(titulo: str, descricao: str):
     global TAREFAS
 
@@ -73,12 +73,16 @@ async def concluir_tarefa(id: int):
     for tarefa in TAREFAS:
         if id == int(tarefa['id']) and tarefa['concluida'] == False:
             tarefa['concluida'] = True
-            tarefa['concluida_em'] = datetime.now()
+            tarefa['concluida_em'] = datetime.now().isoformat(timespec='seconds')
             titulo = tarefa['titulo']
 
-            resp = requests.post(f"http://localhost:8000/notificar?id={id}&titulo={titulo}")
+            try:
+                resp = requests.post(f"http://localhost:8000/notificar?id={id}&titulo={titulo}", timeout=1)
 
-            print(resp)
+                print(resp)
+            except Exception as e:
+                print(e)
+                
             return {"mensagem": "Tarefa atualizada"}
     
     return {"mensagem": "Tarefa não existe"}
