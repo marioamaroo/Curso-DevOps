@@ -1,2 +1,1 @@
-# Curso-DevOps
-Curso de DevOps 16/10
+# devops-10-2026
